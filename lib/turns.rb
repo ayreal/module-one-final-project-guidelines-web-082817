@@ -1,11 +1,11 @@
 require "colorize"
 
 class Turn < ActiveRecord::Base
-  # @@songs = [/Users/Lawford/Desktop/BoxCat_Games_-_02_-_Mt_Fox_Shop.mp3,/Users/Lawford/Desktop/BoxCat_Games_-_24_-_Tricks.mp3,/Users/Lawford/Desktop/BoxCat_Games_-_21_-_Rhythm.mp3]
+  @@songs = ["/Users/Lawford/Desktop/BoxCat_Games_-_02_-_Mt_Fox_Shop.mp3","/Users/Lawford/Desktop/BoxCat_Games_-_24_-_Tricks.mp3","/Users/Lawford/Desktop/BoxCat_Games_-_21_-_Rhythm.mp3"]
 
 
   def start_match(player1,player2)
-    # pid = fork{ exec 'afplay', "/Users/Lawford/Desktop/BoxCat_Games_-_02_-_Mt_Fox_Shop.mp3" }
+    pid = fork{ exec 'afplay', @@songs.sample}
     round_count = 1
     hit_chances = [1..100]
     player_1_points = 0
@@ -49,7 +49,7 @@ class Turn < ActiveRecord::Base
         # end
 
 
-      # pid = fork{ exec 'afplay', "/Users/Lawford/Desktop/Pickup_Coin53.wav" }
+      pid = fork{ exec 'afplay', "/Users/Lawford/Desktop/Pickup_Coin53.wav" }
       puts "#{player2.name}: ".blue.bold + "#{player_2_points} points.".green
       puts "Pick your move!"
       puts "*".blue*80
@@ -64,7 +64,7 @@ class Turn < ActiveRecord::Base
           puts "*".blue*80
         end
       player_2_move = gets.chomp.to_i
-      # pid = fork{ exec 'afplay', "/Users/Lawford/Desktop/Pickup_Coin53.wav" }
+      pid = fork{ exec 'afplay', "/Users/Lawford/Desktop/Pickup_Coin53.wav" }
 
       first_move = DanceMove.find(player_1_move)
       second_move = DanceMove.find(player_2_move)
@@ -77,13 +77,13 @@ class Turn < ActiveRecord::Base
       if miss?(first_move)
         puts "Sorry, you blew it!"
         puts "0 points ".green + "for that whack move..."
-        # pid = fork{ exec 'afplay', "/Users/Lawford/Desktop/Hit_Hurt145.wav" }
+        pid = fork{ exec 'afplay', "/Users/Lawford/Desktop/Hit_Hurt145.wav" }
         puts ""
       else
         puts "Damn, son!"
         player_1_points += first_move.point_value
         puts "#{first_move.point_value} points ".green +  "for doing #{first_move.name}!"
-          # pid = fork{ exec 'afplay', "/Users/Lawford/Desktop/Pickup_Coin57.wav" }
+          pid = fork{ exec 'afplay', "/Users/Lawford/Desktop/Pickup_Coin57.wav" }
         puts ""
       end
 
@@ -92,14 +92,14 @@ class Turn < ActiveRecord::Base
       if miss?(second_move)
         puts "Sorry, you blew it!"
         puts "0 points ".green + "for that whack move..."
-        # pid = fork{ exec 'afplay', "/Users/Lawford/Desktop/Hit_Hurt145.wav" }
+        pid = fork{ exec 'afplay', "/Users/Lawford/Desktop/Hit_Hurt145.wav" }
         puts ""
         puts ""
       else
         puts "Damn son!"
         player_2_points += second_move.point_value
         puts "#{second_move.point_value} points ".green + "for doing #{second_move.name}!"
-        # pid = fork{ exec 'afplay', "/Users/Lawford/Desktop/Pickup_Coin57.wav" }
+        pid = fork{ exec 'afplay', "/Users/Lawford/Desktop/Pickup_Coin57.wav" }
         puts ""
         puts ""
       end
@@ -115,6 +115,7 @@ class Turn < ActiveRecord::Base
     winner = ""
     #decide winner based off point totals and awards win to database
     if points_1 > points_2
+      pid = fork{ exec 'afplay', "/Users/Lawford/Desktop/Pickup_Coin57.wav" }
       puts "#{player1.name} wins!".red.on_white.blink.bold
       puts "#{player2.name} got served!".blue.on_white.blink.bold
       player1.wins += 1
@@ -123,6 +124,7 @@ class Turn < ActiveRecord::Base
       player1.save
       player2.save
     elsif points_2 > points_1
+      pid = fork{ exec 'afplay', "/Users/Lawford/Desktop/Pickup_Coin57.wav" }
       puts "#{player2.name} wins!".blue.on_white.blink.bold
       puts "#{player1.name} got served!".red.on_white.blink.bold
       player2.wins += 1
@@ -135,6 +137,7 @@ class Turn < ActiveRecord::Base
     end
     puts "*".blue*80
     puts ""
+    pid = fork{ exec 'killall', "afplay" }
     game = Game.new
     game.welcome
   end
