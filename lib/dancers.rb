@@ -13,5 +13,7 @@ class Dancer < ActiveRecord::Base
       hometown = gets.chomp
       puts "Word, yo!"
       self.create(name: name, hometown: hometown, EXP: 0, wins: 0)
+      game = Game.new
+      game.welcome
     end
 end
